@@ -54,10 +54,6 @@ class MathicsNotebookKernel(Kernel):
                     'data' : {'text/html' : html},
                     'metadata' : {},
                 }
-
-                file = open('/var/tmp/debug_mathics.log', 'w+')
-                file.write(json.dumps(result.get_data()))
-                file.close()
        
                 self.send_response(self.iopub_socket, 'display_data', display_data)
 
