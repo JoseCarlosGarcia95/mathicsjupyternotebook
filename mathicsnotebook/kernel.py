@@ -26,34 +26,38 @@ class MathicsNotebookKernel(Kernel):
         data = re.sub(r"<math><mglyph width=\"(.*)\" height=\"(.*)\" src=\"(.*)\"/></math>", "<img width=\"\\1\" height=\"\\2\" src=\"\\3\" />", data, 0)
         return data
 
+    def read_static_file(self, static):
+        static_file = file('/home/jose/Proyectos/mathicsjupyternotebook/web/' + static, 'r')
+        content     = static_file.read()
+        static_file.close()
+        return content
     def initialize_javascript_if_needed(self):
         if self.execution_count == 1:
-            inject_javascript_code = """
-<script type="text/javascript">
-            function loadScript(url, callback){
+            inject_javascript_code = '<script type="text/javascript">'
 
-    var script = document.createElement("script")
-    script.type = "text/javascript";
-
-    if (script.readyState){  //IE
-        script.onreadystatechange = function(){
-            if (script.readyState == "loaded" ||
-                    script.readyState == "complete"){
-                script.onreadystatechange = null;
-                callback();
-            }
-        };
-    } else {  //Others
-        script.onload = function(){
-            callback();
-        };
-    }
-
-    script.src = url;
-    document.getElementsByTagName("head")[0].appendChild(script);
-}
-</script>
             """
+<script type="text/javascript" src="/media/js/prototype/prototype.js"></script>
+<script type="text/javascript" src="/media/js/three/Three.js"></script>
+<script type="text/javascript" src="/media/js/three/Detector.js"></script>
+
+<script type="text/javascript" src="/media/js/mathjax/MathJax.js?config=MML_HTMLorMML&amp;delayStartupUntil=configured"></script>
+
+<script type="text/javascript" src="/media/js/message.js"></script>
+<script type="text/javascript" src="/media/js/authentication.js"></script>
+<script type="text/javascript" src="/media/js/inout.js"></script>
+<script type="text/javascript" src="/media/js/utils.js"></script>
+<script type="text/javascript" src="/media/js/mathics.js"></script>
+<script type="text/javascript" src="/media/js/graphics3d.js"></script>
+<script type="text/javascript" src="/media/js/doc.js"></script>"""
+            inject_javascript_code += self.read_static_file('media/js/prototype/prototype.js');
+            inject_javascript_code += self.read_static_file('media/js/three/Three.js');
+            inject_javascript_code += self.read_static_file('media/js/three/Detector.js');            
+            inject_javascript_code += self.read_static_file('media/js/utils.js');            
+            inject_javascript_code += self.read_static_file('media/js/mathics.js');            
+            inject_javascript_code += self.read_static_file('media/js/graphics3d.js');            
+
+
+            inject_javascript_code += '</script>'
             
             display_data = {
                 'data' : {'text/html' : inject_javascript_code},
