@@ -1,3 +1,0 @@
-ipykernel
-ipython
-mathics>=1.0.dev0
