@@ -20,6 +20,14 @@ class MathicsNotebookKernel(Kernel):
     name = 'MathicsNotebook'
 
     """
+    Preprocess output for better support for graphics.
+    """
+    def preprocess_output(self, data):
+        data = re.sub(r"<math><mglyph width=\"(.*)\" height=\"(.*)\" src=\"(.*)\"/></math>", "<img width=\"\\1\" height=\"\\2\" src=\"\\3\" />", data, 0)
+
+        return data
+    
+    """
     Handle jupyter connections.
     """
     def do_execute(self, code, silent, store_history=True,
@@ -49,13 +57,13 @@ class MathicsNotebookKernel(Kernel):
             for result in results:
                 result_data = result.get_data()
                 
-                result_html = result_data['result']
+                result_html = self.preprocess_output(result_data['result'])
                 
                 display_data = {
                     'data' : {'text/html' : result_html},
                     'metadata' : {},
                 }
-       
+                
                 self.send_response(self.iopub_socket, 'display_data', display_data)
 
         return {
